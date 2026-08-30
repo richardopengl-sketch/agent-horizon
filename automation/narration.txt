@@ -1,0 +1,11 @@
+Agent Horizon addresses a simple problem: individually permitted agent actions can compose into an unsafe outcome.
+
+In the first scenario, an enterprise agent reads three authorized internal sources: a product roadmap, a manufacturing reservation, and an executive calendar. Weather and cafeteria events are also present as smokescreen noise, but they are filtered because they do not contribute to the active context.
+
+No single source reveals an exact launch date. But when the agent correlates the relevant evidence, a new strategic conclusion emerges: Project Nova is likely scheduled for a mid-to-late October launch. The derived knowledge is more sensitive than any individual observation. Agent Horizon detects this semantic delta and invokes a semantic reassessment only at the ambiguous, high-impact transition.
+
+When the agent then attempts to publish that derived conclusion externally, Horizon blocks the action. The risk came from the trajectory and its new context, not from a sensitive-information pattern in one isolated message.
+
+The second scenario contains no sensitive content at all. A deployment, traffic shift, and old-version disable are individually authorized. But deleting the final rollback artifact changes production from reversible to effectively irreversible. Agent Horizon detects this consequence delta and requires human approval.
+
+The core idea is to evaluate what becomes newly knowable or newly possible as an agent trajectory evolves. Security and privacy are properties of the trajectory, not just the individual event.

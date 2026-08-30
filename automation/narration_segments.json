@@ -1,0 +1,34 @@
+[
+  {
+    "id": "opening",
+    "text": "Agent Horizon evaluates risk across an agent trajectory, not just one message or tool call. The key idea is simple: individually permitted actions can compose into an unsafe security or privacy outcome."
+  },
+  {
+    "id": "semantic_setup",
+    "text": "In the first scenario, the agent is allowed to read a product roadmap, a manufacturing reservation, and an executive calendar. Weather and cafeteria events are added as smokescreen noise. No single source reveals the final conclusion."
+  },
+  {
+    "id": "semantic_run",
+    "text": "Horizon keeps the evidence that materially contributes to the active state and filters the noise. Correlating the three relevant sources creates new knowledge: Project Nova is likely launching in mid-to-late October. That fact did not exist in any one source."
+  },
+  {
+    "id": "semantic_final",
+    "text": "This is a semantic delta. The derived conclusion is more sensitive than the individual observations. When the agent tries to publish it outside the enterprise trust boundary, Horizon blocks the action."
+  },
+  {
+    "id": "semantic_difference",
+    "text": "An isolated content check can see that every read was authorized. Horizon adds trajectory context: provenance, correlation, and the new state created by the agent."
+  },
+  {
+    "id": "consequence_setup",
+    "text": "The second scenario contains no sensitive content. The agent deploys a new version, shifts production traffic, and disables the old deployment while rollback is still available."
+  },
+  {
+    "id": "consequence_run",
+    "text": "The last request deletes the final rollback artifact. The API call is authorized, but the consequence is not equivalent: production changes from reversible to effectively irreversible. Horizon detects this consequence delta and requires human approval."
+  },
+  {
+    "id": "closing",
+    "text": "Agent Horizon asks what becomes newly knowable or newly possible as the trajectory evolves. Security and privacy are properties of the evolving state, not just the individual event."
+  }
+]
