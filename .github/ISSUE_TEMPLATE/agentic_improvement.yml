@@ -1,0 +1,25 @@
+name: Agentic engineering improvement
+description: Propose a bounded improvement to repository operability, validation, or agent workflow.
+title: "[Agentic] "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: gap
+    attributes:
+      label: Gap
+      description: What is hard for a human or coding agent to understand, change, or validate?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed bounded change
+    validations:
+      required: true
+  - type: textarea
+    id: completion
+    attributes:
+      label: Machine-verifiable completion signal
+      description: What deterministic check proves the improvement is complete?
+    validations:
+      required: true

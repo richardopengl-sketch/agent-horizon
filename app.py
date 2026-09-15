@@ -106,7 +106,8 @@ def render_four_stage_model():
             st.markdown(f'<div class="flowstep"><span class="kicker">{k}</span><b>{t}</b><span class="muted">{b}</span></div>', unsafe_allow_html=True)
 
 def render_source_cards(state: ContextualState):
-    if not state.evidence: return
+    if not state.evidence:
+        return
     st.markdown("#### Evidence that actually contributed")
     cols = st.columns(min(3, len(state.evidence)))
     for idx, evidence in enumerate(state.evidence.values()):
@@ -254,14 +255,16 @@ def run_scenario(events: List[AgentEvent], scenario_name: str, use_slow_path: bo
     st.markdown("---")
     render_final_assessment(scenario_name,state,final_assessment,final_decision)
     if scenario_name == "Semantic Delta":
-        render_source_cards(state); render_difference(state)
+        render_source_cards(state)
+        render_difference(state)
     else:
         st.markdown('<div class="card info"><h4>No sensitive content was involved.</h4><p>The decision comes from changing capability and reversibility state—not content classification.</p></div>', unsafe_allow_html=True)
 
     with st.expander("Technical details / debug view", expanded=False):
         st.write("Final state", state_snapshot(state))
         st.write("Assessment reasons")
-        for r in final_assessment.reasons: st.write("•",r)
+        for r in final_assessment.reasons:
+            st.write("•",r)
         st.write("Raw score",round(final_assessment.score,3))
         st.write("Confidence",round(final_assessment.confidence,3))
         st.write("Stability",round(final_assessment.stability,3))

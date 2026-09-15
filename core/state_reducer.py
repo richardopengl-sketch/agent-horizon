@@ -5,7 +5,6 @@ from typing import Tuple
 
 from .models import AgentEvent, ContextualState, Evidence
 
-
 RELEVANCE_THRESHOLD = 0.35
 
 

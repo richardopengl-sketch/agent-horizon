@@ -1,6 +1,9 @@
 from __future__ import annotations
-import asyncio, json
+
+import asyncio
+import json
 from pathlib import Path
+
 import edge_tts
 
 ROOT = Path(__file__).resolve().parents[1]

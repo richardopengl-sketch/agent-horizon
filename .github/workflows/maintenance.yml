@@ -1,0 +1,28 @@
+name: Repository Maintenance
+
+on:
+  schedule:
+    - cron: "11 9 * * 6"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  cleanup-check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Verify repository cleanup contract
+        run: python scripts/cleanup_repo.py --check
+      - name: Produce cleanup report
+        if: always()
+        run: python scripts/cleanup_repo.py --report-only
+      - name: Upload cleanup report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cleanup-report
+          path: .reports/cleanup-report.json
+          if-no-files-found: error

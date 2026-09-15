@@ -1,0 +1,47 @@
+name: Agentic Loop Health
+
+on:
+  schedule:
+    - cron: "43 7 * * 1"
+  workflow_dispatch:
+  workflow_run:
+    workflows: ["CI"]
+    types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  health:
+    if: >
+      github.event_name != 'workflow_run' ||
+      github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+      - name: Install validation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+          python -m pip install -r requirements-dev.txt
+      - name: Run deterministic repository health loop
+        run: python scripts/validate_repo.py
+      - name: Emit agent-readable health summary
+        if: always()
+        run: python scripts/agent_health_summary.py
+      - name: Upload agentic health artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: agentic-health-${{ github.run_id }}
+          path: |
+            .reports/validation-report.json
+            .reports/agent-health.json
+          if-no-files-found: error

@@ -4,11 +4,10 @@ import json
 from pathlib import Path
 
 from moviepy import (
-    VideoFileClip,
     AudioFileClip,
     CompositeAudioClip,
+    VideoFileClip,
 )
-
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -78,11 +77,6 @@ def main():
 
         requested_start = float(
             cue["start"]
-        )
-
-        requested_end = (
-            requested_start +
-            clip.duration
         )
 
         # -------------------------------------------------
