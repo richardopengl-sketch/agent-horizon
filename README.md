@@ -94,13 +94,39 @@ streamlit run app.py
 
 Open the URL Streamlit prints, normally `http://localhost:8501`.
 
-## Run tests
+## Engineering & validation
+
+The repository is structured so humans and coding agents can understand, change, and validate it through the same bounded engineering loop.
+
+Key entry points:
+
+- `docs/architecture.md` — component boundaries, invariants, failure containment, and validation flow.
+- `docs/agentic-loop.md` — agent contract, machine-readable completion signal, and review loop.
+- `CONTRIBUTING.md` — development and pull-request expectations.
+- `SECURITY.md` — secret handling and security review expectations.
+- `.github/copilot-instructions.md` — repository guidance for GitHub Copilot.
+- `scripts/validate_repo.py` — canonical deterministic validation command.
+
+Run the full validation loop:
+
+```powershell
+python -m pip install -r requirements-dev.txt
+python scripts\validate_repo.py
+```
+
+The validator runs tests, linting, type checks, compilation, and secret scanning, then writes:
+
+```text
+.reports/validation-report.json
+```
+
+For a quick test-only run:
 
 ```powershell
 pytest -q
 ```
 
-Expected: `4 passed`.
+CI, scheduled repository-health checks, security scanning, dependency updates, code-owner review, and machine-readable validation artifacts are defined under `.github/`.
 
 ## Optional automated video pipeline
 
