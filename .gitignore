@@ -4,3 +4,4 @@ __pycache__/
 *.pyc
 artifacts/*
 !artifacts/.gitkeep
+upgrade-backup-*/
