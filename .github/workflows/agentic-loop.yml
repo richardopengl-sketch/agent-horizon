@@ -38,7 +38,7 @@ jobs:
         run: python scripts/agent_health_summary.py
       - name: Upload agentic health artifacts
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: agentic-health-${{ github.run_id }}
           path: |
