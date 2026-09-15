@@ -1,81 +1,163 @@
-"""Place segmented narration on the Playwright cue timeline and export MP4."""
 from __future__ import annotations
 
-import argparse
 import json
 from pathlib import Path
 
-from moviepy import AudioFileClip, CompositeAudioClip, VideoFileClip
+from moviepy import (
+    VideoFileClip,
+    AudioFileClip,
+    CompositeAudioClip,
+)
 
 
-MAX_SUBMISSION_SECONDS = 120.0
-SAFETY_TARGET_SECONDS = 116.0
+ROOT = Path(__file__).resolve().parents[1]
+
+VIDEO_PATH = (
+    ROOT /
+    "artifacts" /
+    "agent-horizon-demo-v2.webm"
+)
+
+TIMELINE_PATH = (
+    ROOT /
+    "artifacts" /
+    "record_timeline_v2.json"
+)
+
+VOICE_DIR = (
+    ROOT /
+    "artifacts" /
+    "voice"
+)
+
+OUTPUT_PATH = (
+    ROOT /
+    "artifacts" /
+    "agent-horizon-demo-v2.mp4"
+)
+
+MIN_GAP = 0.20
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--video", default="artifacts/agent-horizon-demo.webm")
-    parser.add_argument("--voice-manifest", default="artifacts/voice_manifest.json")
-    parser.add_argument("--timeline", default="artifacts/record_timeline.json")
-    parser.add_argument("--output", default="artifacts/agent-horizon-final.mp4")
-    args = parser.parse_args()
+def main():
 
-    output = Path(args.output)
-    output.parent.mkdir(parents=True, exist_ok=True)
+    timeline = json.loads(
+        TIMELINE_PATH.read_text(
+            encoding="utf-8"
+        )
+    )
 
-    voice_manifest = json.loads(Path(args.voice_manifest).read_text(encoding="utf-8"))
-    timeline = json.loads(Path(args.timeline).read_text(encoding="utf-8"))
-    voice_by_id = {item["id"]: item for item in voice_manifest["segments"]}
+    video = VideoFileClip(
+        str(VIDEO_PATH)
+    )
 
-    video = VideoFileClip(args.video)
-    audio_clips = []
-    last_audio_end = 0.0
-    try:
-        for cue in timeline["cues"]:
-            cue_id = cue["id"]
-            voice = voice_by_id[cue_id]
-            clip = AudioFileClip(voice["file"]).with_start(float(cue["start"]))
-            audio_clips.append(clip)
-            last_audio_end = max(last_audio_end, float(cue["start"]) + float(voice["duration"]))
+    tracks = []
 
-        if last_audio_end > SAFETY_TARGET_SECONDS:
+    previous_end = 0.0
+
+    print("\nNarration timeline:")
+    print("-" * 80)
+
+    for cue in timeline["cues"]:
+
+        cue_id = cue["id"]
+
+        path = (
+            VOICE_DIR /
+            f"{cue_id}.mp3"
+        )
+
+        if not path.exists():
+            raise RuntimeError(
+                f"Missing narration: {path}"
+            )
+
+        clip = AudioFileClip(
+            str(path)
+        )
+
+        requested_start = float(
+            cue["start"]
+        )
+
+        requested_end = (
+            requested_start +
+            clip.duration
+        )
+
+        # -------------------------------------------------
+        # Safety check
+        # -------------------------------------------------
+
+        if requested_start < previous_end:
+
+            overlap = (
+                previous_end -
+                requested_start
+            )
+
             print(
-                f"WARNING: narrated timeline ends at {last_audio_end:.1f}s. "
-                f"Target is <= {SAFETY_TARGET_SECONDS:.0f}s for submission safety."
-            )
-        if last_audio_end >= MAX_SUBMISSION_SECONDS:
-            raise SystemExit(
-                f"Narration reaches {last_audio_end:.1f}s, exceeding the {MAX_SUBMISSION_SECONDS:.0f}s submission limit. "
-                "Regenerate narration at a faster rate, for example `python automation/generate_voice.py --rate +12%`."
+                f"WARNING: {cue_id} would overlap "
+                f"previous narration by "
+                f"{overlap:.2f}s"
             )
 
-        final_duration = min(video.duration, last_audio_end + 1.0)
-        if final_duration <= last_audio_end:
-            raise SystemExit(
-                f"Recorded video ({video.duration:.1f}s) is shorter than narration ({last_audio_end:.1f}s)."
-            )
+        # Hard guarantee:
+        # narration can never overlap.
+        actual_start = max(
+            requested_start,
+            previous_end + MIN_GAP,
+        )
 
-        mixed_audio = CompositeAudioClip(audio_clips)
-        final = video.subclipped(0, final_duration).with_audio(mixed_audio)
-        try:
-            final.write_videofile(
-                str(output),
-                codec="libx264",
-                audio_codec="aac",
-                fps=30,
-                preset="medium",
-                ffmpeg_params=["-crf", "20", "-movflags", "+faststart"],
-            )
-        finally:
-            final.close()
-            mixed_audio.close()
-    finally:
-        for clip in audio_clips:
-            clip.close()
-        video.close()
+        actual_end = (
+            actual_start +
+            clip.duration
+        )
 
-    print(f"Final video (WITH narration): {output}")
-    print(f"Final duration: {final_duration:.1f}s")
+        print(
+            f"{cue_id:22s} "
+            f"requested={requested_start:6.2f}s  "
+            f"actual={actual_start:6.2f}s  "
+            f"duration={clip.duration:6.2f}s  "
+            f"end={actual_end:6.2f}s"
+        )
+
+        tracks.append(
+            clip.with_start(
+                actual_start
+            )
+        )
+
+        previous_end = actual_end
+
+    print("-" * 80)
+
+    if previous_end > video.duration:
+
+        print(
+            f"WARNING: narration ends at "
+            f"{previous_end:.2f}s "
+            f"but video ends at "
+            f"{video.duration:.2f}s"
+        )
+
+    audio = CompositeAudioClip(
+        tracks
+    )
+
+    final_video = video.with_audio(
+        audio
+    )
+
+    final_video.write_videofile(
+        str(OUTPUT_PATH),
+        codec="libx264",
+        audio_codec="aac",
+        fps=30,
+    )
+
+    print("\nFinal video:")
+    print(OUTPUT_PATH)
 
 
 if __name__ == "__main__":

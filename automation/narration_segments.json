@@ -1,34 +1,38 @@
-[
-  {
-    "id": "opening",
-    "text": "Agent Horizon evaluates risk across an agent trajectory, not just one message or tool call. The key idea is simple: individually permitted actions can compose into an unsafe security or privacy outcome."
-  },
-  {
-    "id": "semantic_setup",
-    "text": "In the first scenario, the agent is allowed to read a product roadmap, a manufacturing reservation, and an executive calendar. Weather and cafeteria events are added as smokescreen noise. No single source reveals the final conclusion."
-  },
-  {
-    "id": "semantic_run",
-    "text": "Horizon keeps the evidence that materially contributes to the active state and filters the noise. Correlating the three relevant sources creates new knowledge: Project Nova is likely launching in mid-to-late October. That fact did not exist in any one source."
-  },
-  {
-    "id": "semantic_final",
-    "text": "This is a semantic delta. The derived conclusion is more sensitive than the individual observations. When the agent tries to publish it outside the enterprise trust boundary, Horizon blocks the action."
-  },
-  {
-    "id": "semantic_difference",
-    "text": "An isolated content check can see that every read was authorized. Horizon adds trajectory context: provenance, correlation, and the new state created by the agent."
-  },
-  {
-    "id": "consequence_setup",
-    "text": "The second scenario contains no sensitive content. The agent deploys a new version, shifts production traffic, and disables the old deployment while rollback is still available."
-  },
-  {
-    "id": "consequence_run",
-    "text": "The last request deletes the final rollback artifact. The API call is authorized, but the consequence is not equivalent: production changes from reversible to effectively irreversible. Horizon detects this consequence delta and requires human approval."
-  },
-  {
-    "id": "closing",
-    "text": "Agent Horizon asks what becomes newly knowable or newly possible as the trajectory evolves. Security and privacy are properties of the evolving state, not just the individual event."
-  }
-]
+{
+  "voice": "en-US-AvaMultilingualNeural",
+  "rate": "+2%",
+  "segments": [
+    {
+      "id": "opening",
+      "text": "Agent Horizon adds a trajectory-aware security layer to agentic systems. Identity can tell us who the agent is, and authorization can allow each individual call. Horizon asks a different question: what has the trajectory made newly knowable or newly possible?"
+    },
+    {
+      "id": "semantic_setup",
+      "text": "In the first scenario, every source read is individually permitted. The reducer keeps compact contextual state and filters low-contribution noise instead of treating the entire history as equally important."
+    },
+    {
+      "id": "semantic_run",
+      "text": "As relevant observations accumulate, none is sensitive enough by itself to justify a block. But when the agent correlates them, a new strategic fact emerges. That is a semantic delta: new knowledge created by composition, not copied from one source."
+    },
+    {
+      "id": "semantic_final",
+      "text": "The next action attempts to publish that derived fact across an external trust boundary. Horizon combines the current action with the trajectory state and blocks the transfer. The important point is that the risk is contextual, not a simple pattern match."
+    },
+    {
+      "id": "difference",
+      "text": "This complements identity, authorization, MCP gateways, and isolated guardrails. Those layers can approve every step. Horizon evaluates the accumulated trajectory and the contextual impact of what changed."
+    },
+    {
+      "id": "consequence_setup",
+      "text": "The second scenario proves the model is not limited to sensitive content. The agent performs authorized production operations while Horizon tracks capability and reversibility."
+    },
+    {
+      "id": "consequence_run",
+      "text": "Deleting the final rollback artifact is an authorized API call, but it changes the system from recoverable to effectively irreversible. Horizon detects that consequence delta and requires approval before the trajectory crosses the higher-impact state."
+    },
+    {
+      "id": "closing",
+      "text": "Agent Horizon is a compact contextual security state plus delta-based impact assessment: observe, reduce, compare, and enforce. It is designed to sit at agent runtime or gateway boundaries without replacing the protocols and identity systems around it."
+    }
+  ]
+}
